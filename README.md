@@ -3,7 +3,7 @@
 * Update the python badge to reflect what python versions are compatible
 * Repeat the test execution and update the codecov badge
 * Update the pypi version badge
-* Check if the Installation and Example usage instructions are correct (particularly importing a hyphen package and how to use this hyphen-package or rather as a underscore package. Currently it is imported as a hyphen package)
+* Check if the Installation and Example usage instructions are correct (particularly importing a hyphen package and how to use this hyphen-package or rather as a underscore package)
 * Repeat the 1000 times execution with a timeit package and specify the python version (as well as the processor)
 
 
