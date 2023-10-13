@@ -11,7 +11,7 @@
 
 **Version 1.1.0**
 
-![Python version req](https://img.shields.io/badge/python-v3.0%2B-informational)
+![Python version req](https://img.shields.io/badge/python-v3.7%2B-informational)
 [![PyPI version](https://badge.fury.io/py/cyclic-toposort.svg)](https://badge.fury.io/py/cyclic-toposort)
 [![codecov](https://codecov.io/gh/PaulPauls/cyclic-toposort/branch/master/graph/badge.svg)](https://codecov.io/gh/PaulPauls/cyclic-toposort)
 
