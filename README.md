@@ -38,7 +38,7 @@ pip install cyclic-toposort
 The following examples encode the cyclic and acyclic graphs displayed above and show the usage of cyclic-toposort as a package:
 
 ``` python
->>> import cyclic-toposort
+>>> import cyclic_toposort
 
 >>> cyclic_graph_edges = {(1, 2), (2, 3), (3, 5), (3, 6), (4, 1), (4, 5), (4, 6), (5, 2), (5, 7), (6, 1), (8, 6)}
 >>> cyclic_toposort(cyclic_graph_edges)
