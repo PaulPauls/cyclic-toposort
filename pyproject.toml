@@ -21,4 +21,6 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.ruff]
+select = ["ALL"]
+target-version = "py310"
 line-length = 120

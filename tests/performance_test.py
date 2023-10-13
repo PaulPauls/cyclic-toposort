@@ -1,6 +1,6 @@
-import sys
-import random
 import itertools
+import random
+import sys
 
 
 def create_random_graph(num_edges,
@@ -8,8 +8,7 @@ def create_random_graph(num_edges,
                         end_node=None,
                         full_cyclic_graph=False,
                         cyclic_nodes=False) -> (list, {(int, int)}):
-    """
-    Create a random graph (nodes and edges) with the specified amount of edges. The random graph can optionally have
+    """Create a random graph (nodes and edges) with the specified amount of edges. The random graph can optionally have
     an explicitely set start_node or end_node, which has no incoming (or respectively outgoing) edges. If the graph is
     set to be fully cyclic then there exist no single node without at least 1 incoming and outgoing connection
     :param num_edges: int, number of edges in created random graph
@@ -18,12 +17,12 @@ def create_random_graph(num_edges,
     :param full_cyclic_graph: bool (optional), if set then all nodes in the created graph have at least 1 incoming and
                                                1 outgoing connection
     :param cyclic_nodes: bool (optional), if set then an edge can have the same start and end node
-    :return: list of node ids, set of all edges as tuples
+    :return: list of node ids, set of all edges as tuples.
     """
     # No full cyclic graph can be created if start or end node is supplied
     assert (full_cyclic_graph is True and start_node is None and end_node is None) or full_cyclic_graph is False
 
-    nodes = list()
+    nodes = []
     edges = set()
 
     first_node = 1 if start_node is None else start_node
@@ -37,13 +36,10 @@ def create_random_graph(num_edges,
 
     while len(edges) < num_edges:
         possible_new_node = max(nodes) + 1
-        possible_nodes = nodes + [possible_new_node]
+        possible_nodes = [*nodes, possible_new_node]
         if cyclic_nodes:
             edge_start = random.choice(possible_nodes)
-            if edge_start == possible_new_node:
-                edge_end = random.choice(nodes)
-            else:
-                edge_end = random.choice(possible_nodes)
+            edge_end = random.choice(nodes) if edge_start == possible_new_node else random.choice(possible_nodes)
         else:
             edge_start, edge_end = random.sample(possible_nodes, k=2)
 
@@ -70,10 +66,9 @@ def create_random_graph(num_edges,
 
 
 def create_groupings(inputs):
-    """
-    Create all possible groupings of an iterable as generator.
+    """Create all possible groupings of an iterable as generator.
     :param inputs: iterable
-    :return: generator of all possible groupings
+    :return: generator of all possible groupings.
     """
     for n in range(1, len(inputs) + 1):
         for split_indices in itertools.combinations(range(1, len(inputs)), n - 1):
@@ -87,8 +82,7 @@ def create_groupings(inputs):
 
 
 def bruteforce_cyclic_graph_topologies(nodes, edges, start_node=None, end_node=None) -> [([{int}], {(int, int)})]:
-    """
-    Bruteforce all graph topologies with a minimal amount of cyclic edges and a minimal amount of seperate topology
+    """Bruteforce all graph topologies with a minimal amount of cyclic edges and a minimal amount of seperate topology
     groupings by creating all possible permutations of node orderings and groupings and saving only those with minimal
     size. The bruteforcing can be accelerated if a desired start and/or end node for the minimal topologies is supplied.
     Edges that start and end in the same node are not considered cyclic. Return all minimal graph topologies with their
@@ -97,14 +91,15 @@ def bruteforce_cyclic_graph_topologies(nodes, edges, start_node=None, end_node=N
     :param edges: iterable of 2-tuples of the start node and end node of each edge
     :param start_node: int (optional), node id of a start node that should be in first grouping of graph topology
     :param end_node: int (optional), node id of an end node that should be in last grouping of graph topology
-    :return: minimal cyclic and minimal grouped graph topologies and their corresponding cyclic edges
+    :return: minimal cyclic and minimal grouped graph topologies and their corresponding cyclic edges.
     """
-    assert (start_node is None or start_node in nodes) and (end_node is None or end_node in nodes)
+    assert (start_node is None or start_node in nodes)
+    assert (end_node is None or end_node in nodes)
 
-    minimal_cyclic_graph_topologies = list()
+    minimal_cyclic_graph_topologies = []
     minimal_graph_topology_groupings = sys.maxsize
     minimal_number_cyclic_edges = sys.maxsize
-    previously_checked_graph_topologies = list()
+    previously_checked_graph_topologies = []
 
     # Remove single node cyclic edges and copy nodes in case it has been passed as reference
     edges = [(edge_start, edge_end) for (edge_start, edge_end) in edges if edge_start != edge_end]
@@ -122,9 +117,9 @@ def bruteforce_cyclic_graph_topologies(nodes, edges, start_node=None, end_node=N
     for ordering in r_nodes_iter:
 
         if start_node:
-            ordering = (start_node,) + ordering
+            ordering = (start_node, *ordering)
         if end_node:
-            ordering = ordering + (end_node,)
+            ordering = (*ordering, end_node)
 
         for graph_topology in create_groupings(ordering):
             # If the current graph topology has been checked before in another premutation, skip check

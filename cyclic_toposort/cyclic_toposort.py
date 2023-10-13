@@ -1,5 +1,4 @@
-"""
-Copyright (c) 2020 Paul Pauls
+"""Copyright (c) 2020 Paul Pauls.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,23 +19,22 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-import sys
 import itertools
+import sys
 from copy import deepcopy
 
 
 def acyclic_toposort(edges) -> [{int}]:
-    """
-    Create topological sorting of an acyclic graph with maximized groupings of levels. Return this topological sorting
+    """Create topological sorting of an acyclic graph with maximized groupings of levels. Return this topological sorting
     as list of sets that represent each topological level beginning with the start (= dependencyless) nodes of the
     acyclic graph.
     :param edges: iterable of 2-tuples, specifying start and end for each edge
     :return: topological sorting of graph as list of sets that represent each topological level beginning with the start
-             nodes
+             nodes.
     """
     # Create python dict that associates each node with the set of all nodes that having an incoming edge (node_ins) to
     # that particular node. If a node has no incoming connections will the node be associated with an empty set.
-    node_ins = dict()
+    node_ins = {}
     for (edge_start, edge_end) in edges:
         # Don't consider cyclic node edges as not relevant for topological sorting
         if edge_start == edge_end:
@@ -50,7 +48,7 @@ def acyclic_toposort(edges) -> [{int}]:
         else:
             node_ins[edge_end].add(edge_start)
 
-    graph_topology = list()
+    graph_topology = []
 
     while True:
         # Determine all nodes having no input/dependency in the current topological level
@@ -61,9 +59,11 @@ def acyclic_toposort(edges) -> [{int}]:
 
         if not dependencyless:
             if not node_ins:
-                raise RuntimeError("Invalid graph detected")
+                msg = "Invalid graph detected"
+                raise RuntimeError(msg)
             else:
-                raise RuntimeError("Cyclic graph detected in acyclic_toposort function")
+                msg = "Cyclic graph detected in acyclic_toposort function"
+                raise RuntimeError(msg)
 
         # Set dependencyless nodes as the nodes of the next topological level
         graph_topology.append(dependencyless)
@@ -85,8 +85,7 @@ def acyclic_toposort(edges) -> [{int}]:
 
 
 def cyclic_toposort(edges, start_node=None, end_node=None) -> ([int], {(int, int)}):
-    """
-    Sorts directed cyclic graphs given the edges that define the graph and potential start_node or end_node constraints.
+    """Sorts directed cyclic graphs given the edges that define the graph and potential start_node or end_node constraints.
     The function returns a 2-tuple consisting of an ordered list of nodes as well as a set of 2-tuples being the
     necessary minmal cyclic edges.
 
@@ -96,8 +95,8 @@ def cyclic_toposort(edges, start_node=None, end_node=None) -> ([int], {(int, int
     :return: 2-tuple of ordered list of nodes and the minimal set of cyclic edges
     """
     # Process edges by determining the incoming and outgoing connections for each node
-    node_ins = dict()
-    node_outs = dict()
+    node_ins = {}
+    node_outs = {}
     cyclic_edges = set()
     for (edge_start, edge_end) in edges:
         # Don't consider cyclic node edges as not relevant for topological sorting
@@ -139,7 +138,7 @@ def cyclic_toposort(edges, start_node=None, end_node=None) -> ([int], {(int, int
     reduced_edges = edges - cyclic_edges
 
     # Process reduced edges by determining the incoming edges
-    node_ins = dict()
+    node_ins = {}
     for (edge_start, edge_end) in reduced_edges:
         # Don't consider cyclic node edges as not relevant for topological sorting
         if edge_start == edge_end:
@@ -160,10 +159,7 @@ def cyclic_toposort(edges, start_node=None, end_node=None) -> ([int], {(int, int
         else:
             node_ins[edge_end].add(edge_start)
 
-    if start_node:
-        graph_topology = [start_node]
-    else:
-        graph_topology = list()
+    graph_topology = [start_node] if start_node else []
 
     # Perform simple acyclic topological sorting of the restgraph
     while True:
@@ -175,7 +171,8 @@ def cyclic_toposort(edges, start_node=None, end_node=None) -> ([int], {(int, int
                 dependencyless.add(node)
 
         if not dependencyless:
-            raise RuntimeError("Invalid graph detected")
+            msg = "Invalid graph detected"
+            raise RuntimeError(msg)
 
         # Set dependencyless nodes as the nodes of the next topological level
         graph_topology += list(dependencyless)
@@ -200,15 +197,14 @@ def cyclic_toposort(edges, start_node=None, end_node=None) -> ([int], {(int, int
 
 
 def _cyclic_toposort_recursive(node_ins, node_outs) -> {(int, int)}:
-    """
-    Recursive part of the cyclic toposort algorithm, taking a graph as input that is represented through all its nodes
+    """Recursive part of the cyclic toposort algorithm, taking a graph as input that is represented through all its nodes
     and its according inputs and outputs. Returns a minimal set of cyclic connections that would create an order for
     the graph.
     :param node_ins: dict (keys: int, values: {int}), specifying all nodes that have an incoming edge to the respective
         node
     :param node_outs: dict (keys: int, values: {int}), specifying all nodes that have an outgoing edge to the respective
         node
-    :return: minimal set of cyclic edges (2-tuples) that would make the grpah acyclic and therefore sortable
+    :return: minimal set of cyclic edges (2-tuples) that would make the grpah acyclic and therefore sortable.
     """
     cyclic_edges = set()
 
@@ -236,7 +232,7 @@ def _cyclic_toposort_recursive(node_ins, node_outs) -> {(int, int)}:
                     min_number_cyclic_edges = sys.maxsize
 
                     # Recreate edge list from current state of node_ins
-                    edges = list()
+                    edges = []
                     for node, incomings in node_ins.items():
                         for edge_start in incomings:
                             edges.append((edge_start, node))
@@ -295,8 +291,7 @@ def _cyclic_toposort_recursive(node_ins, node_outs) -> {(int, int)}:
 
 
 def cyclic_toposort_groupings(edges, start_node=None, end_node=None) -> ([{int}], {(int, int)}):
-    """
-    Sorts directed cyclic graphs given the edges that define the graph and potential start_node or end_node constraints.
+    """Sorts directed cyclic graphs given the edges that define the graph and potential start_node or end_node constraints.
     The function returns a 2-tuple consisting of an ordered list of set of nodes as well as a set of 2-tuples being the
     necessary minimal cyclic edges. Each set of nodes represents a topological level.
 
@@ -306,8 +301,8 @@ def cyclic_toposort_groupings(edges, start_node=None, end_node=None) -> ([{int}]
     :return: 2-tuple of ordered list of set of nodes and the minimal set of cyclic edges
     """
     # Process edges by determining the incoming and outgoing connections for each node
-    node_ins = dict()
-    node_outs = dict()
+    node_ins = {}
+    node_outs = {}
     start_end_cyclic_edges = set()
     for (edge_start, edge_end) in edges:
         # Don't consider cyclic node edges as not relevant for topological sorting
@@ -343,7 +338,7 @@ def cyclic_toposort_groupings(edges, start_node=None, end_node=None) -> ([{int}]
     cyclic_edges_restgraph = _cyclic_toposort_groupings_recursive(node_ins, node_outs)
 
     # Add all necessary cyclic edges stemming from the set start/end node to the determined minimal sets of cyclic edges
-    cyclic_edges = list()
+    cyclic_edges = []
     for cyclic_edges_restgraph_set in cyclic_edges_restgraph:
         cyclic_edges.append(cyclic_edges_restgraph_set.union(start_end_cyclic_edges))
 
@@ -374,15 +369,14 @@ def cyclic_toposort_groupings(edges, start_node=None, end_node=None) -> ([{int}]
 
 
 def _cyclic_toposort_groupings_recursive(node_ins, node_outs) -> [{(int, int)}]:
-    """
-    Recursive part of the cyclic toposort algorithm, taking a graph as input that is represented through all its nodes
+    """Recursive part of the cyclic toposort algorithm, taking a graph as input that is represented through all its nodes
     and its according inputs and outputs. Returns all minimal sets of cyclic connections that would create an order for
     the graph.
     :param node_ins: dict (keys: int, values: {int}), specifying all nodes that have an incoming edge to the respective
         node
     :param node_outs: dict (keys: int, values: {int}), specifying all nodes that have an outgoing edge to the respective
         node
-    :return: All minimal sets of cyclic edges (2-tuples) that would make the grpah acyclic and therefore sortable
+    :return: All minimal sets of cyclic edges (2-tuples) that would make the grpah acyclic and therefore sortable.
     """
     cyclic_edges = [set()]
 
@@ -410,7 +404,7 @@ def _cyclic_toposort_groupings_recursive(node_ins, node_outs) -> [{(int, int)}]:
                     min_number_cyclic_edges = sys.maxsize
 
                     # Recreate edge list from current state of node_ins
-                    edges = list()
+                    edges = []
                     for node, incomings in node_ins.items():
                         for edge_start in incomings:
                             edges.append((edge_start, node))
@@ -433,7 +427,7 @@ def _cyclic_toposort_groupings_recursive(node_ins, node_outs) -> [{(int, int)}]:
                         # variables and only save the new min cyclic edges
                         if len(necessary_cyclic_edges) + len(cyclic_edges_restgraph[0]) < min_number_cyclic_edges:
                             min_number_cyclic_edges = len(necessary_cyclic_edges) + len(cyclic_edges_restgraph[0])
-                            cyclic_edges = list()
+                            cyclic_edges = []
                             for cyclic_edges_restgraph_set in cyclic_edges_restgraph:
                                 cyclic_edges.append(cyclic_edges_restgraph_set.union(necessary_cyclic_edges))
                         # If a set of cyclic edges has been found that has the same size as the current minimum,
@@ -475,8 +469,7 @@ def _cyclic_toposort_groupings_recursive(node_ins, node_outs) -> [{(int, int)}]:
 
 
 def _create_reduced_node_ins_outs(edges, node_ins, node_outs) -> ({int: {int}}, {int: {int}}, {(int, int)}):
-    """
-    Iteratively and randomly select more and more edges, declare them as cyclic and return a deepcopied node_ins and
+    """Iteratively and randomly select more and more edges, declare them as cyclic and return a deepcopied node_ins and
     node_outs with the cyclic edge removed.
     :param edges: Set of 2-tuples, with the 2-tuples specifying the start and end node of an edge
     :param node_ins: dict (keys: int, values: {int}), specifying all nodes that have an incoming edge to the respective
@@ -484,7 +477,7 @@ def _create_reduced_node_ins_outs(edges, node_ins, node_outs) -> ({int: {int}}, 
     :param node_outs: dict (keys: int, values: {int}), specifying all nodes that have an outgoing edge to the respective
         node
     :return: deepcopied node_ins with the cyclic edge removed, deepcopied node_outs with the cyclic edge removed,
-        cyclic edge
+        cyclic edge.
     """
     for n in range(1, len(edges) + 1):
         for necessary_cyclic_edges in itertools.combinations(edges, n):

@@ -1,24 +1,23 @@
 import os
-import time
 import random
+import time
+
+import test_utils
 from graphviz import Digraph
 
 import cyclic_toposort
-import test_utils
 
 
 def test_create_random_graph():
-    """
-    Creating multiple graphs with random parameters and visualizing them in seperate directoy.
-    """
-    graph_viz_dir = os.path.dirname(os.path.realpath(__file__)) + '/random_test_graphs/'
+    """Creating multiple graphs with random parameters and visualizing them in seperate directoy."""
+    graph_viz_dir = os.path.dirname(os.path.realpath(__file__)) + "/random_test_graphs/"
     os.makedirs(graph_viz_dir, exist_ok=True)
 
     for i in range(100):
         num_edges = random.randint(6, 24)
         start_node = random.choice([None, random.randint(1, 5)])
         end_node = random.choice([None, random.randint(6, 10)])
-        full_cyclic_graph = True if start_node is None and end_node is None else False
+        full_cyclic_graph = bool(start_node is None and end_node is None)
         cyclic_nodes = random.choice([True, False])
         nodes, edges = test_utils.create_random_graph(num_edges=num_edges,
                                                       start_node=start_node,
@@ -26,21 +25,19 @@ def test_create_random_graph():
                                                       full_cyclic_graph=full_cyclic_graph,
                                                       cyclic_nodes=cyclic_nodes)
 
-        dot = Digraph(graph_attr={'rankdir': 'TB'})
+        dot = Digraph(graph_attr={"rankdir": "TB"})
         for (edge_start, edge_end) in edges:
             dot.edge(str(edge_start), str(edge_end))
 
-        dot.render(filename=f'random_test_graph_{i}', directory=graph_viz_dir, view=False, cleanup=True, format='svg')
+        dot.render(filename=f"random_test_graph_{i}", directory=graph_viz_dir, view=False, cleanup=True, format="svg")
 
 
 def test_bruteforce_cyclic_graph_topologies():
-    """
-    Showcase bruteforcing of minimal topologies for random cyclic graphs
-    """
+    """Showcase bruteforcing of minimal topologies for random cyclic graphs."""
     num_edges = random.randint(6, 24)
     start_node = random.choice([None, random.randint(1, 5)])
     end_node = random.choice([None, random.randint(6, 10)])
-    full_cyclic_graph = True if start_node is None and end_node is None else False
+    full_cyclic_graph = bool(start_node is None and end_node is None)
     cyclic_nodes = random.choice([True, False])
     nodes, edges = test_utils.create_random_graph(num_edges=num_edges,
                                                   start_node=start_node,
@@ -88,11 +85,11 @@ def test_cyclic_toposort():
         print(f"start_node: {start_node}")
         print(f"end_node: {end_node}")
 
-        dot = Digraph(graph_attr={'rankdir': 'TB'})
+        dot = Digraph(graph_attr={"rankdir": "TB"})
         for (edge_start, edge_end) in edges:
             dot.edge(str(edge_start), str(edge_end))
 
-        dot.render(view=False, cleanup=True, format='svg')
+        dot.render(view=False, cleanup=True, format="svg")
 
         t_start = time.time()
         cyclic_toposort_graph_topology = cyclic_toposort.cyclic_toposort(edges=edges,
@@ -123,7 +120,7 @@ def test_cyclic_toposort():
         t_total_cyclic_toposort_bruteforce += (t_end - t_start)
 
         cyclic_toposort_correct_flag = True
-        if not len(cyclic_toposort_graph_topology[1]) == len(bruteforced_cyclic_graph_topologies[0][1]):
+        if len(cyclic_toposort_graph_topology[1]) != len(bruteforced_cyclic_graph_topologies[0][1]):
             cyclic_toposort_correct_flag = False
 
         for (edge_start, edge_end) in edges:
@@ -157,7 +154,7 @@ def test_cyclic_toposort():
     assert cyclic_toposort_groupings_correct_log
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     test_create_random_graph()
     test_bruteforce_cyclic_graph_topologies()
     test_cyclic_toposort()
