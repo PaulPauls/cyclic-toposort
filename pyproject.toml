@@ -5,6 +5,7 @@ description = "A sorting algorithm for directed cyclic graphs that results in a 
 authors = ["Paul Pauls <mail@paulpauls.de>"]
 license = "MIT"
 readme = "README.md"
+packages = [{include = "cyclic_toposort"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
