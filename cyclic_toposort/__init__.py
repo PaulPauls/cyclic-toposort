@@ -1,1 +1,3 @@
-from cyclic_toposort.cyclic_toposort import acyclic_toposort, cyclic_toposort, cyclic_toposort_groupings
+from cyclic_toposort.acyclic_toposort import acyclic_toposort
+from cyclic_toposort.cyclic_toposort import cyclic_toposort
+from cyclic_toposort.cyclic_toposort_groupings import cyclic_toposort_groupings
