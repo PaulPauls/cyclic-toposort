@@ -5,13 +5,14 @@
 * Update the pypi version badge
 * Check if the Installation and Example usage instructions are correct (particularly importing a hyphen package and how to use this hyphen-package or rather as a underscore package)
 * Repeat the 1000 times execution with a timeit package and specify the python version (as well as the processor)
+* Add badges for the .pre-commit hooks used (see https://github.com/PyCQA/docformatter for many useful sample badges)
 
 
 ## Topological Sorting Algorithm for Cyclic Graphs
 
 **Version 1.1.0**
 
-![Python version req](https://img.shields.io/badge/python-v3.7%2B-informational)
+![Python version req](https://img.shields.io/badge/python-v3.9%2B-informational)
 [![PyPI version](https://badge.fury.io/py/cyclic-toposort.svg)](https://badge.fury.io/py/cyclic-toposort)
 [![codecov](https://codecov.io/gh/PaulPauls/cyclic-toposort/branch/master/graph/badge.svg)](https://codecov.io/gh/PaulPauls/cyclic-toposort)
 

@@ -20,14 +20,18 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+from collections.abc import Iterable
 
-def acyclic_toposort(edges) -> [{int}]:
-    """Create topological sorting of an acyclic graph with maximized groupings of levels. Return this topological
-    sorting as list of sets that represent each topological level beginning with the start (= dependencyless) nodes of
+
+def acyclic_toposort(edges: Iterable[tuple[int, int]]) -> list[set[int]]:
+    """Create topological sorting of an acyclic graph with maximized groupings of topological levels. Return this
+    topological sorting as list of sets that represent each topological level beginning with the dependencyless nodes of
     the acyclic graph.
-    :param edges: iterable of 2-tuples, specifying start and end for each edge
-    :return: topological sorting of graph as list of sets that represent each topological level beginning with the start
-             nodes.
+    :param edges: iterable of edges represented as 2-tuples, whereas each 2-tuple represents the start-index and
+    end-index of an edge
+    :return: topological sorting of the graph represented by the input edges as a list of sets that represent each
+    topological level in order beginning with all dependencyless nodes.
+    :raises RuntimeError: if a cyclic graph is detected.
     """
     # Create python dict that associates each node with the set of all nodes that having an incoming edge (node_ins) to
     # that particular node. If a node has no incoming connections will the node be associated with an empty set.
