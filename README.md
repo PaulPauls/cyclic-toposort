@@ -3,7 +3,7 @@
 * Update the python badge to reflect what python versions are compatible
 * Repeat the test execution and update the codecov badge
 * Update the pypi version badge
-* Check if the Installation and Example usage instructions are correct
+* Check if the Installation and Example usage instructions are correct (particularly importing a hyphen package and how to use this hyphen-package or rather as a underscore package. Currently it is imported as a hyphen package)
 * Repeat the 1000 times execution with a timeit package and specify the python version (as well as the processor)
 
 
@@ -47,7 +47,6 @@ The following examples encode the cyclic and acyclic graphs displayed above and 
 ([{8, 3, 4}, {5, 6}, {1, 7}, {2}], {(2, 3)})
 >>> cyclic_toposort_groupings(cyclic_graph_edges, start_node=2, end_node=5)
 ([{8, 2, 4}, {3}, {6}, {1, 5}], {(1, 2), (5, 7), (5, 2)})
-
 
 >>> acyclic_toposort_edges = {(1, 2), (1, 3), (2, 3), (2, 4), (3, 4), (5, 3), (5, 6), (7, 6)}
 >>> acyclic_toposort(acyclic_toposort_edges)
