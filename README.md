@@ -1,6 +1,15 @@
-## Topological Sorting Algorithm for Cyclic Graphs ##
+## TODO
 
-**Version 1.0.0**
+* Update the python badge to reflect what python versions are compatible
+* Repeat the test execution and update the codecov badge
+* Update the pypi version badge
+* Check if the Installation and Example usage instructions are correct
+* Repeat the 1000 times execution with a timeit package and specify the python version (as well as the processor)
+
+
+## Topological Sorting Algorithm for Cyclic Graphs
+
+**Version 1.1.0**
 
 ![Python version req](https://img.shields.io/badge/python-v3.0%2B-informational)
 [![PyPI version](https://badge.fury.io/py/cyclic-toposort.svg)](https://badge.fury.io/py/cyclic-toposort)
@@ -9,7 +18,7 @@
 Sorting algorithm for cyclic as well as acyclic directed graphs such as those below. A directed graph is cyclic if any node exists that has a directed path leading to another node and back to the origin node.
 
 <p align="center">
-  <img src="./illustrations/cyclic_toposort_graphs.svg" width="60%" alt="Example cyclic and acyclic graphs"/>
+  <img src="./.illustrations/cyclic_toposort_graphs.svg" width="60%" alt="Example cyclic and acyclic graphs"/>
 </p>
 
 The project provides three sorting algorithms for these graphs. `cyclic_topoosort` sorts a cyclic graph and returns a 2-tuple with the first element being a list of ordered nodes and the second element being a set of 2-tuples that are the cyclic edges. The set of cyclic edges is minimal and if the graph is acyclic will be an empty set. `cyclic_toposort_groupings` functions identical though will return as the first element of the 2-tuple an ordered list of sets of nodes, representing topological levels that can be visited at the same time. The set of cyclic edges is also minimal with the groupings variant and empty if the graph is acyclic. `acyclic_toposort` sorts only acyclic graphs and returns an ordered list of sets of nodes, again representing the topological levels.
@@ -17,29 +26,38 @@ The project provides three sorting algorithms for these graphs. `cyclic_topoosor
 
 ------------------------------------------------------------------------------------------------------------------------
 
-### Example Usage ###
+### Installation & Example Usage
 
-The following examples encode the cyclic and acyclic graphs displayed above:
+Install `cyclic-toposort` via pip or your preferred Python package manager:
+
+```shell
+pip install cyclic-toposort
+```
+
+
+The following examples encode the cyclic and acyclic graphs displayed above and show the usage of cyclic-toposort as a package:
 
 ``` python
->>> edges = {(1, 2), (2, 3), (3, 5), (3, 6), (4, 1), (4, 5), (4, 6), (5, 2), (5, 7), (6, 1), (8, 6)}
->>> cyclic_toposort(edges)
+>>> import cyclic-toposort
+
+>>> cyclic_graph_edges = {(1, 2), (2, 3), (3, 5), (3, 6), (4, 1), (4, 5), (4, 6), (5, 2), (5, 7), (6, 1), (8, 6)}
+>>> cyclic_toposort(cyclic_graph_edges)
 ([8, 3, 4, 5, 6, 1, 7, 2], {(2, 3)})
->>> cyclic_toposort_groupings(edges)
+>>> cyclic_toposort_groupings(cyclic_graph_edges)
 ([{8, 3, 4}, {5, 6}, {1, 7}, {2}], {(2, 3)})
->>> cyclic_toposort_groupings(edges, start_node=2, end_node=5)
+>>> cyclic_toposort_groupings(cyclic_graph_edges, start_node=2, end_node=5)
 ([{8, 2, 4}, {3}, {6}, {1, 5}], {(1, 2), (5, 7), (5, 2)})
 
 
->>> edges = {(1, 2), (1, 3), (2, 3), (2, 4), (3, 4), (5, 3), (5, 6), (7, 6)}
->>> acyclic_toposort(edges)
+>>> acyclic_toposort_edges = {(1, 2), (1, 3), (2, 3), (2, 4), (3, 4), (5, 3), (5, 6), (7, 6)}
+>>> acyclic_toposort(acyclic_toposort_edges)
 [{1, 5, 7}, {2, 6}, {3}, {4}]
 ```
 
 
 ------------------------------------------------------------------------------------------------------------------------
 
-### Correctness and Performance ###
+### Correctness and Performance
 
 Since I am unable to formerly validate the specifications of my algorithms have I opted to prove the correctness of the cyclic sorting algorithm by randomly generating cyclic graphs, sorting them with the algortihms and verifying the correctness of the results by testing them against a bruteforce sorting method that takes a long time though is able to calculate all correct results. The random graphs are generated with the following parameters:
 
@@ -65,7 +83,7 @@ This verification process is repeated 1000 times in the test files and yielded t
 
 ------------------------------------------------------------------------------------------------------------------------
 
-### Dev Comments ###
+### Dev Comments
 
 * The cyclic sorting algorithms are slow when applied to graphs that are fully cyclic (each node has at least 1 incoming and at least 1 outgoing edge). The Bruteforce method is surprisingly quick when the graph is fully cyclic.
 
@@ -76,6 +94,6 @@ This verification process is repeated 1000 times in the test files and yielded t
 
 ------------------------------------------------------------------------------------------------------------------------
 
-### Known Issues ###
+### Known Issues
 
 None
