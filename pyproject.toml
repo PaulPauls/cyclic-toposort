@@ -12,6 +12,8 @@ python = "^3.10"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.4.2"
+pytest-cov = "^4.1.0"
+graphviz = "^0.20.1"
 
 [build-system]
 requires = ["poetry-core"]
