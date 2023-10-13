@@ -3,11 +3,13 @@ import random
 import sys
 
 
-def create_random_graph(num_edges,
-                        start_node=None,
-                        end_node=None,
-                        full_cyclic_graph=False,
-                        cyclic_nodes=False) -> (list, {(int, int)}):
+def create_random_graph(
+    num_edges,
+    start_node=None,
+    end_node=None,
+    full_cyclic_graph=False,
+    cyclic_nodes=False,
+) -> (list, {(int, int)}):
     """Create a random graph (nodes and edges) with the specified amount of edges. The random graph can optionally have
     an explicitely set start_node or end_node, which has no incoming (or respectively outgoing) edges. If the graph is
     set to be fully cyclic then there exist no single node without at least 1 incoming and outgoing connection
@@ -93,8 +95,8 @@ def bruteforce_cyclic_graph_topologies(nodes, edges, start_node=None, end_node=N
     :param end_node: int (optional), node id of an end node that should be in last grouping of graph topology
     :return: minimal cyclic and minimal grouped graph topologies and their corresponding cyclic edges.
     """
-    assert (start_node is None or start_node in nodes)
-    assert (end_node is None or end_node in nodes)
+    assert start_node is None or start_node in nodes
+    assert end_node is None or end_node in nodes
 
     minimal_cyclic_graph_topologies = []
     minimal_graph_topology_groupings = sys.maxsize
@@ -115,7 +117,6 @@ def bruteforce_cyclic_graph_topologies(nodes, edges, start_node=None, end_node=N
     r_nodes_iter = itertools.permutations(nodes_copy)
 
     for ordering in r_nodes_iter:
-
         if start_node:
             ordering = (start_node, *ordering)
         if end_node:

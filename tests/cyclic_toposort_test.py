@@ -19,14 +19,16 @@ def test_create_random_graph():
         end_node = random.choice([None, random.randint(6, 10)])
         full_cyclic_graph = bool(start_node is None and end_node is None)
         cyclic_nodes = random.choice([True, False])
-        nodes, edges = test_utils.create_random_graph(num_edges=num_edges,
-                                                      start_node=start_node,
-                                                      end_node=end_node,
-                                                      full_cyclic_graph=full_cyclic_graph,
-                                                      cyclic_nodes=cyclic_nodes)
+        nodes, edges = test_utils.create_random_graph(
+            num_edges=num_edges,
+            start_node=start_node,
+            end_node=end_node,
+            full_cyclic_graph=full_cyclic_graph,
+            cyclic_nodes=cyclic_nodes,
+        )
 
         dot = Digraph(graph_attr={"rankdir": "TB"})
-        for (edge_start, edge_end) in edges:
+        for edge_start, edge_end in edges:
             dot.edge(str(edge_start), str(edge_end))
 
         dot.render(filename=f"random_test_graph_{i}", directory=graph_viz_dir, view=False, cleanup=True, format="svg")
@@ -39,20 +41,24 @@ def test_bruteforce_cyclic_graph_topologies():
     end_node = random.choice([None, random.randint(6, 10)])
     full_cyclic_graph = bool(start_node is None and end_node is None)
     cyclic_nodes = random.choice([True, False])
-    nodes, edges = test_utils.create_random_graph(num_edges=num_edges,
-                                                  start_node=start_node,
-                                                  end_node=end_node,
-                                                  full_cyclic_graph=full_cyclic_graph,
-                                                  cyclic_nodes=cyclic_nodes)
+    nodes, edges = test_utils.create_random_graph(
+        num_edges=num_edges,
+        start_node=start_node,
+        end_node=end_node,
+        full_cyclic_graph=full_cyclic_graph,
+        cyclic_nodes=cyclic_nodes,
+    )
 
     print(f"nodes: {nodes}")
     print(f"edges: {edges}")
 
     t_start = time.time()
-    bruteforced_cyclic_graph_topologies = test_utils.bruteforce_cyclic_graph_topologies(nodes=nodes,
-                                                                                        edges=edges,
-                                                                                        start_node=start_node,
-                                                                                        end_node=end_node)
+    bruteforced_cyclic_graph_topologies = test_utils.bruteforce_cyclic_graph_topologies(
+        nodes=nodes,
+        edges=edges,
+        start_node=start_node,
+        end_node=end_node,
+    )
     t_end = time.time()
     print(f"bruteforced cyclic graph topologies: {bruteforced_cyclic_graph_topologies}")
     print(f"bruteforce time: {t_end - t_start}\n")
@@ -74,11 +80,13 @@ def test_cyclic_toposort():
         end_node = random.choice([None, random.randint(6, 10)])
         full_cyclic_graph = False  # Too complex given the high number of random tests
         cyclic_nodes = random.choice([True, False])
-        nodes, edges = test_utils.create_random_graph(num_edges=num_edges,
-                                                      start_node=start_node,
-                                                      end_node=end_node,
-                                                      full_cyclic_graph=full_cyclic_graph,
-                                                      cyclic_nodes=cyclic_nodes)
+        nodes, edges = test_utils.create_random_graph(
+            num_edges=num_edges,
+            start_node=start_node,
+            end_node=end_node,
+            full_cyclic_graph=full_cyclic_graph,
+            cyclic_nodes=cyclic_nodes,
+        )
 
         print(f"nodes: {nodes}")
         print(f"edges: {edges}")
@@ -86,44 +94,50 @@ def test_cyclic_toposort():
         print(f"end_node: {end_node}")
 
         dot = Digraph(graph_attr={"rankdir": "TB"})
-        for (edge_start, edge_end) in edges:
+        for edge_start, edge_end in edges:
             dot.edge(str(edge_start), str(edge_end))
 
         dot.render(view=False, cleanup=True, format="svg")
 
         t_start = time.time()
-        cyclic_toposort_graph_topology = cyclic_toposort.cyclic_toposort(edges=edges,
-                                                                         start_node=start_node,
-                                                                         end_node=end_node)
+        cyclic_toposort_graph_topology = cyclic_toposort.cyclic_toposort(
+            edges=edges,
+            start_node=start_node,
+            end_node=end_node,
+        )
         t_end = time.time()
         print(f"cyclic toposort graph topology: {cyclic_toposort_graph_topology}")
         print(f"cyclic toposort time: {t_end - t_start}")
-        t_total_cyclic_toposort += (t_end - t_start)
+        t_total_cyclic_toposort += t_end - t_start
 
         t_start = time.time()
-        cyclic_toposort_groupings_graph_topology = cyclic_toposort.cyclic_toposort_groupings(edges=edges,
-                                                                                             start_node=start_node,
-                                                                                             end_node=end_node)
+        cyclic_toposort_groupings_graph_topology = cyclic_toposort.cyclic_toposort_groupings(
+            edges=edges,
+            start_node=start_node,
+            end_node=end_node,
+        )
         t_end = time.time()
         print(f"cyclic toposort groupings graph topology: {cyclic_toposort_groupings_graph_topology}")
         print(f"cyclic toposort groupings time: {t_end - t_start}")
-        t_total_cyclic_toposort_groupings += (t_end - t_start)
+        t_total_cyclic_toposort_groupings += t_end - t_start
 
         t_start = time.time()
-        bruteforced_cyclic_graph_topologies = test_utils.bruteforce_cyclic_graph_topologies(nodes=nodes,
-                                                                                            edges=edges,
-                                                                                            start_node=start_node,
-                                                                                            end_node=end_node)
+        bruteforced_cyclic_graph_topologies = test_utils.bruteforce_cyclic_graph_topologies(
+            nodes=nodes,
+            edges=edges,
+            start_node=start_node,
+            end_node=end_node,
+        )
         t_end = time.time()
         print(f"bruteforced cyclic graph topologies: {bruteforced_cyclic_graph_topologies}")
         print(f"bruteforce time: {t_end - t_start}")
-        t_total_cyclic_toposort_bruteforce += (t_end - t_start)
+        t_total_cyclic_toposort_bruteforce += t_end - t_start
 
         cyclic_toposort_correct_flag = True
         if len(cyclic_toposort_graph_topology[1]) != len(bruteforced_cyclic_graph_topologies[0][1]):
             cyclic_toposort_correct_flag = False
 
-        for (edge_start, edge_end) in edges:
+        for edge_start, edge_end in edges:
             if edge_start == edge_end or (edge_start, edge_end) in cyclic_toposort_graph_topology[1]:
                 continue
             edge_start_index = None
@@ -139,10 +153,14 @@ def test_cyclic_toposort():
         print(f"cyclic toposort result correct: {cyclic_toposort_correct_flag}")
         cyclic_toposort_correct_log &= cyclic_toposort_correct_flag
 
-        print("cyclic toposort groupings result one of the bruteforced and therefore correct: {}"
-              .format(cyclic_toposort_groupings_graph_topology in bruteforced_cyclic_graph_topologies))
-        cyclic_toposort_groupings_correct_log &= \
+        print(
+            "cyclic toposort groupings result one of the bruteforced and therefore correct: {}".format(
+                cyclic_toposort_groupings_graph_topology in bruteforced_cyclic_graph_topologies,
+            ),
+        )
+        cyclic_toposort_groupings_correct_log &= (
             cyclic_toposort_groupings_graph_topology in bruteforced_cyclic_graph_topologies
+        )
 
     print(f"Total time cyclic toposort: {t_total_cyclic_toposort}")
     print(f"Total time cyclic toposort groupings: {t_total_cyclic_toposort_groupings}")

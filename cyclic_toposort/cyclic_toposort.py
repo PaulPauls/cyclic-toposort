@@ -35,7 +35,7 @@ def acyclic_toposort(edges) -> [{int}]:
     # Create python dict that associates each node with the set of all nodes that having an incoming edge (node_ins) to
     # that particular node. If a node has no incoming connections will the node be associated with an empty set.
     node_ins = {}
-    for (edge_start, edge_end) in edges:
+    for edge_start, edge_end in edges:
         # Don't consider cyclic node edges as not relevant for topological sorting
         if edge_start == edge_end:
             continue
@@ -98,7 +98,7 @@ def cyclic_toposort(edges, start_node=None, end_node=None) -> ([int], {(int, int
     node_ins = {}
     node_outs = {}
     cyclic_edges = set()
-    for (edge_start, edge_end) in edges:
+    for edge_start, edge_end in edges:
         # Don't consider cyclic node edges as not relevant for topological sorting
         if edge_start == edge_end:
             continue
@@ -139,7 +139,7 @@ def cyclic_toposort(edges, start_node=None, end_node=None) -> ([int], {(int, int
 
     # Process reduced edges by determining the incoming edges
     node_ins = {}
-    for (edge_start, edge_end) in reduced_edges:
+    for edge_start, edge_end in reduced_edges:
         # Don't consider cyclic node edges as not relevant for topological sorting
         if edge_start == edge_end:
             continue
@@ -239,9 +239,11 @@ def _cyclic_toposort_recursive(node_ins, node_outs) -> {(int, int)}:
 
                     # Iteratively and randomly declare more and more edges as cyclic and see how well the resulting
                     # graph (represented as reduced_node_ins and reduced_node_outs) is sortable.
-                    for reduced_node_ins, reduced_node_outs, necessary_cyclic_edges in \
-                            _create_reduced_node_ins_outs(edges, node_ins, node_outs):
-
+                    for reduced_node_ins, reduced_node_outs, necessary_cyclic_edges in _create_reduced_node_ins_outs(
+                        edges,
+                        node_ins,
+                        node_outs,
+                    ):
                         # If the necessary cyclic edges from now on are higher than the already found minimum number
                         # of cyclic edges then break
                         if len(necessary_cyclic_edges) > min_number_cyclic_edges:
@@ -304,7 +306,7 @@ def cyclic_toposort_groupings(edges, start_node=None, end_node=None) -> ([{int}]
     node_ins = {}
     node_outs = {}
     start_end_cyclic_edges = set()
-    for (edge_start, edge_end) in edges:
+    for edge_start, edge_end in edges:
         # Don't consider cyclic node edges as not relevant for topological sorting
         if edge_start == edge_end:
             continue
@@ -411,17 +413,21 @@ def _cyclic_toposort_groupings_recursive(node_ins, node_outs) -> [{(int, int)}]:
 
                     # Iteratively and randomly declare more and more edges as cyclic and see how well the resulting
                     # graph (represented as reduced_node_ins and reduced_node_outs) is sortable.
-                    for reduced_node_ins, reduced_node_outs, necessary_cyclic_edges in \
-                            _create_reduced_node_ins_outs(edges, node_ins, node_outs):
-
+                    for reduced_node_ins, reduced_node_outs, necessary_cyclic_edges in _create_reduced_node_ins_outs(
+                        edges,
+                        node_ins,
+                        node_outs,
+                    ):
                         # If the necessary cyclic edges from now on are higher than the already found minimum number
                         # of cyclic edges then break
                         if len(necessary_cyclic_edges) > min_number_cyclic_edges:
                             break
 
                         # Recursively check for the minimum amount of cyclic edges in the resulting restgraph
-                        cyclic_edges_restgraph = _cyclic_toposort_groupings_recursive(reduced_node_ins,
-                                                                                      reduced_node_outs)
+                        cyclic_edges_restgraph = _cyclic_toposort_groupings_recursive(
+                            reduced_node_ins,
+                            reduced_node_outs,
+                        )
 
                         # If a new minimal amount of cyclic edges has been found update the min_number_cyclic_edges
                         # variables and only save the new min cyclic edges
@@ -483,7 +489,7 @@ def _create_reduced_node_ins_outs(edges, node_ins, node_outs) -> ({int: {int}}, 
         for necessary_cyclic_edges in itertools.combinations(edges, n):
             reduced_node_ins = deepcopy(node_ins)
             reduced_node_outs = deepcopy(node_outs)
-            for (edge_start, edge_end) in necessary_cyclic_edges:
+            for edge_start, edge_end in necessary_cyclic_edges:
                 reduced_node_ins[edge_end] -= {edge_start}
                 reduced_node_outs[edge_start] -= {edge_end}
             yield reduced_node_ins, reduced_node_outs, set(necessary_cyclic_edges)

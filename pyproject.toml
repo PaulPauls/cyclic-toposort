@@ -22,8 +22,13 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.ruff]
 select = ["ALL"]
-target-version = "py310"
+target-version = "py37"
+line-length = 120
+
+[tool.black]
+target-version = ["py37", "py38", "py39", "py310", "py311", "py312"]
 line-length = 120
 
 [tool.mypy]
 strict = true
+python_version = "3.7"
