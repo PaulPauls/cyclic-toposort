@@ -24,3 +24,6 @@ build-backend = "poetry.core.masonry.api"
 select = ["ALL"]
 target-version = "py310"
 line-length = 120
+
+[tool.mypy]
+strict = true
