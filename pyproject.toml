@@ -24,6 +24,10 @@ build-backend = "poetry.core.masonry.api"
 target-version = ["py39", "py310", "py311", "py312"]
 line-length = 120
 
+[tool.docformatter]
+wrap-summaries = 120
+wrap-descriptions = 120
+
 [tool.ruff]
 select = ["ALL"]
 target-version = "py39"

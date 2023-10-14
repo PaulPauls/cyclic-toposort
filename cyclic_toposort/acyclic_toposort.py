@@ -24,13 +24,14 @@ from collections.abc import Iterable
 
 
 def acyclic_toposort(edges: Iterable[tuple[int, int]]) -> list[set[int]]:
-    """Create topological sorting of an acyclic graph with maximized groupings of topological levels. Return this
-    topological sorting as list of sets that represent each topological level beginning with the dependencyless nodes of
-    the acyclic graph.
-    :param edges: iterable of edges represented as 2-tuples, whereas each 2-tuple represents the start-index and
-    end-index of an edge
+    """Create topological sorting of an acyclic graph with maximized groupings of topological levels.
+
+    Return this topological sorting as a list of sets that represent each topological level beginning with the
+    dependencyless nodes of the acyclic graph.
+    :param edges: iterable of edges represented as 2-tuples, whereas each 2-tuple represents the start-index and end-
+        index of an edge
     :return: topological sorting of the graph represented by the input edges as a list of sets that represent each
-    topological level in order beginning with all dependencyless nodes.
+        topological level in order beginning with all dependencyless nodes.
     :raises RuntimeError: if a cyclic graph is detected.
     """
     # Create python dict that associates each node with the set of all nodes that having an incoming edge (node_ins) to

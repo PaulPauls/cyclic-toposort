@@ -28,13 +28,14 @@ from copy import deepcopy
 def create_reduced_node_ins_outs(edges, node_ins, node_outs) -> ({int: {int}}, {int: {int}}, {(int, int)}):
     """Iteratively and randomly select more and more edges, declare them as cyclic and return a deepcopied node_ins and
     node_outs with the cyclic edge removed.
+
     :param edges: Set of 2-tuples, with the 2-tuples specifying the start and end node of an edge
     :param node_ins: dict (keys: int, values: {int}), specifying all nodes that have an incoming edge to the respective
         node
     :param node_outs: dict (keys: int, values: {int}), specifying all nodes that have an outgoing edge to the respective
         node
-    :return: deepcopied node_ins with the cyclic edge removed, deepcopied node_outs with the cyclic edge removed,
-        cyclic edge.
+    :return: deepcopied node_ins with the cyclic edge removed, deepcopied node_outs with the cyclic edge removed, cyclic
+        edge.
     """
     for n in range(1, len(edges) + 1):
         for necessary_cyclic_edges in itertools.combinations(edges, n):

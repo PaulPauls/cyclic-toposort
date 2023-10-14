@@ -10,14 +10,16 @@ def create_random_graph(
     full_cyclic_graph=False,
     cyclic_nodes=False,
 ) -> (list, {(int, int)}):
-    """Create a random graph (nodes and edges) with the specified amount of edges. The random graph can optionally have
-    an explicitely set start_node or end_node, which has no incoming (or respectively outgoing) edges. If the graph is
-    set to be fully cyclic then there exist no single node without at least 1 incoming and outgoing connection
+    """Create a random graph (nodes and edges) with the specified amount of edges.
+
+    The random graph can optionally have an explicitely set start_node or end_node, which has no incoming (or
+    respectively outgoing) edges. If the graph is set to be fully cyclic then there exist no single node without at
+    least 1 incoming and outgoing connection
     :param num_edges: int, number of edges in created random graph
     :param start_node: int (optional), node id of a start node that has no incoming connections
     :param end_node: int (optional), node id of an end node that has no outgoing connections
-    :param full_cyclic_graph: bool (optional), if set then all nodes in the created graph have at least 1 incoming and
-                                               1 outgoing connection
+    :param full_cyclic_graph: bool (optional), if set then all nodes in the created graph have at least 1 incoming and 1
+        outgoing connection
     :param cyclic_nodes: bool (optional), if set then an edge can have the same start and end node
     :return: list of node ids, set of all edges as tuples.
     """
@@ -69,6 +71,7 @@ def create_random_graph(
 
 def create_groupings(inputs):
     """Create all possible groupings of an iterable as generator.
+
     :param inputs: iterable
     :return: generator of all possible groupings.
     """
@@ -86,9 +89,11 @@ def create_groupings(inputs):
 def bruteforce_cyclic_graph_topologies(nodes, edges, start_node=None, end_node=None) -> [([{int}], {(int, int)})]:
     """Bruteforce all graph topologies with a minimal amount of cyclic edges and a minimal amount of seperate topology
     groupings by creating all possible permutations of node orderings and groupings and saving only those with minimal
-    size. The bruteforcing can be accelerated if a desired start and/or end node for the minimal topologies is supplied.
-    Edges that start and end in the same node are not considered cyclic. Return all minimal graph topologies with their
-    amount of cyclic edges.
+    size.
+
+    The bruteforcing can be accelerated if a desired start and/or end node for the minimal topologies is supplied. Edges
+    that start and end in the same node are not considered cyclic. Return all minimal graph topologies with their amount
+    of cyclic edges.
     :param nodes: list of all nodes
     :param edges: iterable of 2-tuples of the start node and end node of each edge
     :param start_node: int (optional), node id of a start node that should be in first grouping of graph topology

@@ -1,5 +1,5 @@
-"""Module providing functions for sorting directed cyclic graphs with minimal cyclic edges providing groups of edges
-of the same topological level.
+"""Module providing functions for sorting directed cyclic graphs with minimal cyclic edges providing groups of edges of
+the same topological level.
 """
 
 # Copyright (c) 2020 Paul Pauls.
@@ -29,9 +29,9 @@ from cyclic_toposort.utils import create_reduced_node_ins_outs
 
 
 def cyclic_toposort_groupings(edges, start_node=None, end_node=None) -> ([{int}], {(int, int)}):
-    """Sorts directed cyclic graphs given the edges that define the graph and potential start_node or end_node constraints.
-    The function returns a 2-tuple consisting of an ordered list of set of nodes as well as a set of 2-tuples being the
-    necessary minimal cyclic edges. Each set of nodes represents a topological level.
+    """Sorts directed cyclic graphs given the edges that define the graph and potential start_node or end_node
+    constraints. The function returns a 2-tuple consisting of an ordered list of set of nodes as well as a set of
+    2-tuples being the necessary minimal cyclic edges. Each set of nodes represents a topological level.
 
     :param edges: Set of 2-tuples, with the 2-tuples specifying the start and end node of an edge
     :param start_node: int (optional), a node with which the sorted list of nodes should start
@@ -107,9 +107,10 @@ def cyclic_toposort_groupings(edges, start_node=None, end_node=None) -> ([{int}]
 
 
 def _cyclic_toposort_groupings_recursive(node_ins, node_outs) -> [{(int, int)}]:
-    """Recursive part of the cyclic toposort algorithm, taking a graph as input that is represented through all its nodes
-    and its according inputs and outputs. Returns all minimal sets of cyclic connections that would create an order for
-    the graph.
+    """Recursive part of the cyclic toposort algorithm, taking a graph as input that is represented through all its
+    nodes and its according inputs and outputs.
+
+    Returns all minimal sets of cyclic connections that would create an order for the graph.
     :param node_ins: dict (keys: int, values: {int}), specifying all nodes that have an incoming edge to the respective
         node
     :param node_outs: dict (keys: int, values: {int}), specifying all nodes that have an outgoing edge to the respective

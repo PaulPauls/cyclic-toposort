@@ -139,8 +139,9 @@ def cyclic_toposort(edges, start_node=None, end_node=None) -> ([int], {(int, int
 
 def _cyclic_toposort_recursive(node_ins, node_outs) -> {(int, int)}:
     """Recursive part of the cyclic toposort algorithm, taking a graph as input that is represented through all its
-    nodes and its according inputs and outputs. Returns a minimal set of cyclic connections that would create an order
-    for the graph.
+    nodes and its according inputs and outputs.
+
+    Returns a minimal set of cyclic connections that would create an order for the graph.
     :param node_ins: dict (keys: int, values: {int}), specifying all nodes that have an incoming edge to the respective
         node
     :param node_outs: dict (keys: int, values: {int}), specifying all nodes that have an outgoing edge to the respective
