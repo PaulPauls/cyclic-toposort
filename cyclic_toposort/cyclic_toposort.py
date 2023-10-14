@@ -22,8 +22,6 @@
 
 import sys
 
-from cyclic_toposort.acyclic_toposort import acyclic_toposort
-
 
 def cyclic_toposort(
     edges: set[tuple[int, int]],
@@ -32,7 +30,7 @@ def cyclic_toposort(
     """"""
     node_ins: dict[int, set[int]] = {}
     node_outs: dict[int, set[int]] = {}
-    cyclic_edges: set[tuple[int, int]] = set()
+    cyclic_edges_forced: set[tuple[int, int]] = set()
 
     for edge_start, edge_end in edges:
         # Don't consider cyclic node edges as not relevant for topological sorting
@@ -43,23 +41,31 @@ def cyclic_toposort(
         node_ins.setdefault(edge_start, set())
         node_outs.setdefault(edge_end, set())
 
-        # If start_node is supplied then violating edges are automatically considered cyclic
+        # If start_node is supplied then violating edges are considered as forced cyclic edges
         if start_node and start_node == edge_end:
-            cyclic_edges.add((edge_start, edge_end))
+            cyclic_edges_forced.add((edge_start, edge_end))
             continue
 
         # Store the edge_start and edge_end in the node_ins and node_outs dictionaries
         node_ins.setdefault(edge_end, set()).add(edge_start)
         node_outs.setdefault(edge_start, set()).add(edge_end)
 
-    # Recursively sort the graph, finding all minmal sets cyclic edges that would make the graph acyclic
-    cyclic_edges_restgraph = _cyclic_toposort_recursive(node_ins, node_outs)
+    # Recursively sort the (possibly cyclic) graph represented by the just determined node inputs and outputs, which
+    # take the potential start_node constraint in consideration.
+    cyclic_edges = _cyclic_toposort_recursive(
+        node_ins=node_ins,
+        node_outs=node_outs,
+    )
 
-    # Add all necessary cyclic edges stemming from the set start/end node to the determined minimal sets of cyclic edges
-    cyclic_edges = []
-    for cyclic_edges_restgraph_set in cyclic_edges_restgraph:
-        cyclic_edges.append(cyclic_edges_restgraph_set.union(start_end_cyclic_edges))
+    # If there are forced cyclic_edges due to a start_node constraint add them to the computed cyclic_edges
+    if cyclic_edges_forced:
+        for cyclic_edges_set in cyclic_edges:
+            cyclic_edges_set.update(cyclic_edges_forced)
 
+    # TODO: Determine the minimal groupings graph topology for each set of cyclic edges and return the one with the
+    #  least amount of groupings
+
+    """
     # If graph has cyclic edges and is not acyclic to begin with
     if cyclic_edges[0]:
         min_groupings_graph_topology = None
@@ -76,14 +82,8 @@ def cyclic_toposort(
         # Determine the minimal groupings graph topology by acyclic sorting the original graph
         min_groupings_graph_topology = (acyclic_toposort(edges), set())
 
-    # If end node is specifically set but not in the last topological level remove end node from other levels and
-    # add it in the last level
-    if end_node and end_node not in min_groupings_graph_topology[0][-1]:
-        for grouping in min_groupings_graph_topology[0]:
-            grouping -= {end_node}
-        min_groupings_graph_topology[0][-1].add(end_node)
-
     return min_groupings_graph_topology
+    """
 
 
 def _cyclic_toposort_recursive(node_ins, node_outs) -> [{(int, int)}]:
