@@ -22,26 +22,34 @@
 
 
 import itertools
+from collections.abc import Iterator
 from copy import deepcopy
 
 
-def create_reduced_node_ins_outs(edges, node_ins, node_outs) -> ({int: {int}}, {int: {int}}, {(int, int)}):
-    """Iteratively and randomly select more and more edges, declare them as cyclic and return a deepcopied node_ins and
-    node_outs with the cyclic edge removed.
+def generate_modified_ins_outs(
+    edges: set[tuple[int, int]],
+    node_ins: dict[int, set[int]],
+    node_outs: dict[int, set[int]],
+) -> Iterator[tuple[dict[int, set[int]], dict[int, set[int]], set[tuple[int, int]]]]:
+    """Randomly select edges, treat them as cyclic and yield modified node_ins/outs with those cyclic edges removed.
 
-    :param edges: Set of 2-tuples, with the 2-tuples specifying the start and end node of an edge
-    :param node_ins: dict (keys: int, values: {int}), specifying all nodes that have an incoming edge to the respective
-        node
-    :param node_outs: dict (keys: int, values: {int}), specifying all nodes that have an outgoing edge to the respective
-        node
-    :return: deepcopied node_ins with the cyclic edge removed, deepcopied node_outs with the cyclic edge removed, cyclic
-        edge.
+    :param edges: Set of edges, each represented as a (start_node, end_node) tuple.
+    :param node_ins: Dictionary mapping nodes to sets of nodes from which they receive edges.
+    :param node_outs: Dictionary mapping nodes to sets of nodes to which they send edges.
+    :yield: Iterator for a 3-tuple consisting of
+        - Modified node_ins with cyclic edges removed.
+        - Modified node_outs with cyclic edges removed.
+        - Set of edges treated as cyclic.
     """
+    # Iterate over subsets of edges of increasing sizes
     for n in range(1, len(edges) + 1):
-        for necessary_cyclic_edges in itertools.combinations(edges, n):
-            reduced_node_ins = deepcopy(node_ins)
-            reduced_node_outs = deepcopy(node_outs)
-            for edge_start, edge_end in necessary_cyclic_edges:
-                reduced_node_ins[edge_end] -= {edge_start}
-                reduced_node_outs[edge_start] -= {edge_end}
-            yield reduced_node_ins, reduced_node_outs, set(necessary_cyclic_edges)
+        for cyclic_edges in itertools.combinations(edges, n):
+            modified_ins = deepcopy(node_ins)
+            modified_outs = deepcopy(node_outs)
+
+            # Remove cyclic edges from modified ins and outs
+            for edge_start, edge_end in cyclic_edges:
+                modified_ins[edge_end].discard(edge_start)
+                modified_outs[edge_start].discard(edge_end)
+
+            yield modified_ins, modified_outs, set(cyclic_edges)

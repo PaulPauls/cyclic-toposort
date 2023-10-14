@@ -28,6 +28,7 @@ def acyclic_toposort(edges: Iterable[tuple[int, int]]) -> list[set[int]]:
 
     Return this topological sorting as a list of sets that represent each topological level beginning with the
     dependencyless nodes of the acyclic graph.
+
     :param edges: iterable of edges represented as 2-tuples, whereas each 2-tuple represents the start-index and end-
         index of an edge
     :return: topological sorting of the graph represented by the input edges as a list of sets that represent each
@@ -55,10 +56,7 @@ def acyclic_toposort(edges: Iterable[tuple[int, int]]) -> list[set[int]]:
     graph_topology: list[set[int]] = []
     while True:
         # Determine all nodes having no input/dependency in the current topological level
-        dependencyless = set()
-        for node, incomings in node_ins.items():
-            if not incomings:
-                dependencyless.add(node)
+        dependencyless = {node for node, incomings in node_ins.items() if not incomings}
 
         if not dependencyless:
             msg = "Cyclic graph detected in acyclic_toposort function" if node_ins else "Invalid graph detected"
@@ -77,7 +75,6 @@ def acyclic_toposort(edges: Iterable[tuple[int, int]]) -> list[set[int]]:
 
         # Remove depdencyless nodes from node_ins (the set of required incoming nodes) as those dependencyless nodes
         # have been placed and their dependency to other nodes is therefore fulfilled
-        for node, incomings in node_ins.items():
-            node_ins[node] = incomings - dependencyless
+        node_ins = {node: incomings - dependencyless for node, incomings in node_ins.items()}
 
     return graph_topology
