@@ -21,11 +21,16 @@
 # SOFTWARE.
 
 import sys
+from collections.abc import Iterable
 
-from cyclic_toposort.utils import create_reduced_node_ins_outs
+from cyclic_toposort.utils import generate_modified_ins_outs
 
 
-def cyclic_toposort(edges, start_node=None, end_node=None) -> ([int], {(int, int)}):
+def cyclic_toposort(
+    edges: Iterable[tuple[int, int]],
+    start_node: int | None = None,
+    end_node: int | None = None,
+) -> tuple[list[int], dict[tuple[int, int]]]:
     """Sorts directed cyclic graphs given the edges that define the graph and potential start_node or end_node
     constraints. The function returns a 2-tuple consisting of an ordered list of nodes as well as a set of 2-tuples
     being the necessary minmal cyclic edges.
@@ -181,7 +186,7 @@ def _cyclic_toposort_recursive(node_ins, node_outs) -> {(int, int)}:
 
                     # Iteratively and randomly declare more and more edges as cyclic and see how well the resulting
                     # graph (represented as reduced_node_ins and reduced_node_outs) is sortable.
-                    for reduced_node_ins, reduced_node_outs, necessary_cyclic_edges in create_reduced_node_ins_outs(
+                    for reduced_node_ins, reduced_node_outs, necessary_cyclic_edges in generate_modified_ins_outs(
                         edges,
                         node_ins,
                         node_outs,
