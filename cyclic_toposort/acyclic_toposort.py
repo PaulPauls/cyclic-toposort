@@ -34,9 +34,9 @@ def acyclic_toposort(edges: Iterable[tuple[int, int]]) -> list[set[int]]:
         topological level in order beginning with all dependencyless nodes.
     :raises RuntimeError: if a cyclic graph is detected.
     """
-    # Create python dict that associates each node with the set of all nodes that having an incoming edge (node_ins) to
+    # Create dict that associates each node with the set of all nodes that having an incoming edge (node_ins) to
     # that particular node. If a node has no incoming connections will the node be associated with an empty set.
-    node_ins = {}
+    node_ins: dict[int, set[int]] = {}
     for edge_start, edge_end in edges:
         # Don't consider cyclic node edges as not relevant for topological sorting
         if edge_start == edge_end:
@@ -50,22 +50,19 @@ def acyclic_toposort(edges: Iterable[tuple[int, int]]) -> list[set[int]]:
         else:
             node_ins[edge_end].add(edge_start)
 
-    graph_topology = []
-
+    # Create the topological sorting of the graph represented by the input edges as a list of sets that represent each
+    # topological level in order beginning with all dependencyless nodes.
+    graph_topology: list[set[int]] = []
     while True:
         # Determine all nodes having no input/dependency in the current topological level
         dependencyless = set()
         for node, incomings in node_ins.items():
-            if len(incomings) == 0:
+            if not incomings:
                 dependencyless.add(node)
 
         if not dependencyless:
-            if not node_ins:
-                msg = "Invalid graph detected"
-                raise RuntimeError(msg)
-            else:
-                msg = "Cyclic graph detected in acyclic_toposort function"
-                raise RuntimeError(msg)
+            msg = "Cyclic graph detected in acyclic_toposort function" if node_ins else "Invalid graph detected"
+            raise RuntimeError(msg)
 
         # Set dependencyless nodes as the nodes of the next topological level
         graph_topology.append(dependencyless)
