@@ -10,3 +10,6 @@ print(result)
 acyclic_graph_edges = {(1, 2), (1, 3), (2, 3), (2, 4), (3, 4), (5, 3), (5, 6), (7, 6)}
 result = ct.acyclic_toposort(acyclic_graph_edges)
 print(result)
+
+result = ct.cyclic_toposort(acyclic_graph_edges)
+print(result)
