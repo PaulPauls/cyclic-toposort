@@ -1,6 +1,4 @@
-"""Module providing functions for sorting directed cyclic graphs with minimal cyclic edges providing groups of edges of
-the same topological level.
-"""
+"""Module providing functions for sorting directed cyclic graphs with minimal cyclic edges in topological groups."""
 
 # Copyright (c) 2020 Paul Pauls.
 #
