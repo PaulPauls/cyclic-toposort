@@ -22,6 +22,8 @@
 
 import sys
 
+from cyclic_toposort.utils import generate_reduced_ins_outs
+
 
 def cyclic_toposort(
     edges: set[tuple[int, int]],
@@ -91,7 +93,7 @@ def _cyclic_toposort_recursive(
     node_outs: dict[int, set[int]],
 ) -> list[set[tuple[int, int]]]:
     """"""
-    cyclic_edges = [set()]
+    cyclic_edges: list[set[tuple[int, int]]] = [set()]
 
     while True:
         #### FORWARD SORTING ###########################################################################################
@@ -111,43 +113,44 @@ def _cyclic_toposort_recursive(
                     min_number_cyclic_edges = sys.maxsize
 
                     # Recreate edge list from current state of node_ins
-                    edges = []
-                    for node, incomings in node_ins.items():
-                        for edge_start in incomings:
-                            edges.append((edge_start, node))
+                    edges = {
+                        (edge_start, edge_end) for edge_end, incomings in node_ins.items() for edge_start in incomings
+                    }
 
                     # Iteratively and randomly declare more and more edges as cyclic and see how well the resulting
                     # graph (represented as reduced_node_ins and reduced_node_outs) is sortable.
-                    for reduced_node_ins, reduced_node_outs, necessary_cyclic_edges in create_reduced_node_ins_outs(
-                        edges,
-                        node_ins,
-                        node_outs,
+                    for reduced_node_ins, reduced_node_outs, forced_cyclic_edges in generate_reduced_ins_outs(
+                        edges=edges,
+                        node_ins=node_ins,
+                        node_outs=node_outs,
                     ):
-                        # If the necessary cyclic edges from now on are higher than the already found minimum number
-                        # of cyclic edges then break
-                        if len(necessary_cyclic_edges) > min_number_cyclic_edges:
+                        # Break if the necessary cyclic edges are higher than the already found minimum number of
+                        # cyclic edges
+                        if len(forced_cyclic_edges) > min_number_cyclic_edges:
                             break
 
                         # Recursively check for the minimum amount of cyclic edges in the resulting restgraph
-                        cyclic_edges_restgraph = _cyclic_toposort_recursive(
-                            reduced_node_ins,
-                            reduced_node_outs,
+                        reduced_cyclic_edges = _cyclic_toposort_recursive(
+                            node_ins=reduced_node_ins,
+                            node_outs=reduced_node_outs,
                         )
 
                         # If a new minimal amount of cyclic edges has been found update the min_number_cyclic_edges
                         # variables and only save the new min cyclic edges
-                        if len(necessary_cyclic_edges) + len(cyclic_edges_restgraph[0]) < min_number_cyclic_edges:
-                            min_number_cyclic_edges = len(necessary_cyclic_edges) + len(cyclic_edges_restgraph[0])
-                            cyclic_edges = []
-                            for cyclic_edges_restgraph_set in cyclic_edges_restgraph:
-                                cyclic_edges.append(cyclic_edges_restgraph_set.union(necessary_cyclic_edges))
+                        total_cyclic_edges = len(forced_cyclic_edges) + len(reduced_cyclic_edges[0])
+                        if total_cyclic_edges < min_number_cyclic_edges:
+                            min_number_cyclic_edges = total_cyclic_edges
+                            cyclic_edges = [
+                                reduced_cyclic_edges_set.union(forced_cyclic_edges)
+                                for reduced_cyclic_edges_set in reduced_cyclic_edges
+                            ]
                         # If a set of cyclic edges has been found that has the same size as the current minimum,
                         # save these cyclic edges as well
-                        elif len(necessary_cyclic_edges) + len(cyclic_edges_restgraph[0]) == min_number_cyclic_edges:
-                            for cyclic_edges_restgraph_set in cyclic_edges_restgraph:
-                                cyclic_edges.append(cyclic_edges_restgraph_set.union(necessary_cyclic_edges))
+                        elif total_cyclic_edges == min_number_cyclic_edges:
+                            for reduced_cyclic_edges_set in reduced_cyclic_edges:
+                                cyclic_edges.append(reduced_cyclic_edges_set.union(forced_cyclic_edges))
 
-                    break
+                    return cyclic_edges
                     ####################################################################################################
 
                 # Remove nodes with no outgoing edges from consideration
@@ -157,8 +160,6 @@ def _cyclic_toposort_recursive(
 
                 # Remove nodes that were placed/removed from consideration of being following nodes of other nodes
                 node_outs = {node: outgoings - followerless for node, outgoings in node_outs.items()}
-
-            break
             ############################################################################################################
 
         # Remove nodes with no incoming edges from consideration
