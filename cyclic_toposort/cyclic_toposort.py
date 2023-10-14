@@ -22,6 +22,7 @@
 
 import sys
 
+from cyclic_toposort.acyclic_toposort import acyclic_toposort
 from cyclic_toposort.utils import generate_reduced_ins_outs
 
 
@@ -64,28 +65,23 @@ def cyclic_toposort(
         for cyclic_edges_set in cyclic_edges:
             cyclic_edges_set.update(cyclic_edges_forced)
 
-    # TODO: Determine the minimal groupings graph topology for each set of cyclic edges and return the one with the
-    #  least amount of groupings
-
-    """
     # If graph has cyclic edges and is not acyclic to begin with
     if cyclic_edges[0]:
-        min_groupings_graph_topology = None
-        min_groupings_graph_topology_len = sys.maxsize
-        # Determine the set of cyclic edges that leads to a topological sorting with the least amount of topological
-        # groupings
+        min_graph_topology = None
+        min_graph_topology_len = sys.maxsize
+        # Among the list of sets of minimal cyclic_edges determine the set of cyclic edges that also leads to a
+        # topological sorting with the least amount of topological groupings
         for cyclic_edges_set in cyclic_edges:
             reduced_edges = edges - cyclic_edges_set
             graph_topology = acyclic_toposort(reduced_edges)
-            if len(graph_topology) < min_groupings_graph_topology_len:
-                min_groupings_graph_topology = (graph_topology, cyclic_edges_set)
-                min_groupings_graph_topology_len = len(graph_topology)
+            if len(graph_topology) < min_graph_topology_len:
+                min_graph_topology = (graph_topology, cyclic_edges_set)
+                min_graph_topology_len = len(graph_topology)
     else:
-        # Determine the minimal groupings graph topology by acyclic sorting the original graph
-        min_groupings_graph_topology = (acyclic_toposort(edges), set())
+        # As the graph is acyclic return a simple acylic topological sorting with an empty set of cyclic edges
+        min_graph_topology = (acyclic_toposort(edges), set())
 
-    return min_groupings_graph_topology
-    """
+    return min_graph_topology
 
 
 def _cyclic_toposort_recursive(
