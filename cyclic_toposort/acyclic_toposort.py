@@ -24,10 +24,8 @@ from collections.abc import Iterable
 
 
 def acyclic_toposort(edges: Iterable[tuple[int, int]]) -> list[set[int]]:
-    """Create topological sorting of an acyclic graph with maximized groupings of topological levels.
-
-    Return this topological sorting as a list of sets that represent each topological level beginning with the
-    dependencyless nodes of the acyclic graph.
+    """Create and return a topological sorting of an acyclic graph as a list of sets, each set representing a
+    topological level, starting with the nodes that have no dependencies.
 
     :param edges: iterable of edges represented as 2-tuples, whereas each 2-tuple represents the start-index and end-
         index of an edge
@@ -43,13 +41,11 @@ def acyclic_toposort(edges: Iterable[tuple[int, int]]) -> list[set[int]]:
         if edge_start == edge_end:
             continue
 
-        if edge_start not in node_ins:
-            node_ins[edge_start] = set()
+        # Ensure that each node is present in the node_ins dict, even if it has no incoming edges
+        node_ins.setdefault(edge_start, set())
 
-        if edge_end not in node_ins:
-            node_ins[edge_end] = {edge_start}
-        else:
-            node_ins[edge_end].add(edge_start)
+        # Add the edge_start node to the set of incoming nodes of the edge_end node
+        node_ins.setdefault(edge_end, set()).add(edge_start)
 
     # Create the topological sorting of the graph represented by the input edges as a list of sets that represent each
     # topological level in order beginning with all dependencyless nodes.

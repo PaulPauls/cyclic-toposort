@@ -22,7 +22,7 @@
 
 
 import itertools
-from collections.abc import Iterator
+from collections.abc import Iterable, Iterator
 from copy import deepcopy
 
 
@@ -31,7 +31,8 @@ def generate_modified_ins_outs(
     node_ins: dict[int, set[int]],
     node_outs: dict[int, set[int]],
 ) -> Iterator[tuple[dict[int, set[int]], dict[int, set[int]], set[tuple[int, int]]]]:
-    """Randomly select edges, treat them as cyclic and yield modified node_ins/outs with those cyclic edges removed.
+    """Randomly select subsets of edges, treat them as cyclic, and yield modified node_ins and node_outs with those
+    cyclic edges removed.
 
     :param edges: Set of edges, each represented as a (start_node, end_node) tuple.
     :param node_ins: Dictionary mapping nodes to sets of nodes from which they receive edges.
@@ -53,3 +54,44 @@ def generate_modified_ins_outs(
                 modified_outs[edge_start].discard(edge_end)
 
             yield modified_ins, modified_outs, set(cyclic_edges)
+
+
+def create_node_ins_outs(
+    edges: Iterable[tuple[int, int]],
+    start_node: int | None = None,
+    end_node: int | None = None,
+) -> tuple[dict[int, set[int]], dict[int, set[int]], set[tuple[int, int]]]:
+    """Given the edges of a directed graph, compute the incoming and outgoing connections for each node and identify
+    cyclic edges stemming from required start_node or end_node constraints.
+
+    :param edges: Iterable of 2-tuples, with the 2-tuples specifying the start and end node of an edge.
+    :param start_node: Optionally specified node with which the sorted list of nodes should start.
+    :param end_node: Optionally specified node with which the sorted list of nodes should end.
+    :return: 3-tuple of
+        - Dictionary mapping nodes to a set of nodes from which there's an incoming edge.
+        - Dictionary mapping nodes to a set of nodes to which there's an outgoing edge.
+        - Set of cyclic edges.
+    """
+    node_ins: dict[int, set[int]] = {}
+    node_outs: dict[int, set[int]] = {}
+    cyclic_edges: set[tuple[int, int]] = set()
+
+    for edge_start, edge_end in edges:
+        # Don't consider cyclic node edges as not relevant for topological sorting
+        if edge_start == edge_end:
+            continue
+
+        # Ensure the nodes exist in the dictionaries
+        node_ins.setdefault(edge_start, set())
+        node_outs.setdefault(edge_end, set())
+
+        # If start_node or end_node are supplied then violating edges are automatically considered cyclic
+        if (start_node and start_node == edge_end) or (end_node and end_node == edge_start):
+            cyclic_edges.add((edge_start, edge_end))
+            continue
+
+        # Store the edge_start and edge_end in the node_ins and node_outs dictionaries
+        node_ins.setdefault(edge_end, set()).add(edge_start)
+        node_outs.setdefault(edge_start, set()).add(edge_end)
+
+    return node_ins, node_outs, cyclic_edges
