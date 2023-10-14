@@ -38,4 +38,4 @@ line-length = 120
 
 [tool.mypy]
 strict = true
-python_version = "3.7"
+python_version = "3.9"
