@@ -86,17 +86,11 @@ def cyclic_toposort(
     """
 
 
-def _cyclic_toposort_recursive(node_ins, node_outs) -> [{(int, int)}]:
-    """Recursive part of the cyclic toposort algorithm, taking a graph as input that is represented through all its
-    nodes and its according inputs and outputs.
-
-    Returns all minimal sets of cyclic connections that would create an order for the graph.
-    :param node_ins: dict (keys: int, values: {int}), specifying all nodes that have an incoming edge to the respective
-        node
-    :param node_outs: dict (keys: int, values: {int}), specifying all nodes that have an outgoing edge to the respective
-        node
-    :return: All minimal sets of cyclic edges (2-tuples) that would make the grpah acyclic and therefore sortable.
-    """
+def _cyclic_toposort_recursive(
+    node_ins: dict[int, set[int]],
+    node_outs: dict[int, set[int]],
+) -> list[set[tuple[int, int]]]:
+    """"""
     cyclic_edges = [set()]
 
     while True:
