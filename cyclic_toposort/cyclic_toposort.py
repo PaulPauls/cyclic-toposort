@@ -23,7 +23,7 @@
 import sys
 from collections.abc import Iterable
 
-from cyclic_toposort.utils import generate_modified_ins_outs
+from cyclic_toposort.utils import create_node_ins_outs, generate_modified_ins_outs
 
 
 def cyclic_toposort(
@@ -41,38 +41,7 @@ def cyclic_toposort(
     :return: 2-tuple of ordered list of nodes and the minimal set of cyclic edges
     """
     # Process edges by determining the incoming and outgoing connections for each node
-    node_ins = {}
-    node_outs = {}
-    cyclic_edges = set()
-    for edge_start, edge_end in edges:
-        # Don't consider cyclic node edges as not relevant for topological sorting
-        if edge_start == edge_end:
-            continue
-
-        # Make sure nodes are considered in the incoming/outgoing nodes dicts even if they have no incoming/outgoing
-        # edge
-        if edge_start not in node_ins:
-            node_ins[edge_start] = set()
-        if edge_end not in node_outs:
-            node_outs[edge_end] = set()
-
-        # If start or endnodes are supplied then violating edges are automatically considered cyclic
-        if start_node and edge_end == start_node:
-            cyclic_edges.add((edge_start, start_node))
-            continue
-        if end_node and edge_start == end_node:
-            cyclic_edges.add((end_node, edge_end))
-            continue
-
-        if edge_end not in node_ins:
-            node_ins[edge_end] = {edge_start}
-        else:
-            node_ins[edge_end].add(edge_start)
-
-        if edge_start not in node_outs:
-            node_outs[edge_start] = {edge_end}
-        else:
-            node_outs[edge_start].add(edge_end)
+    node_ins, node_outs, cyclic_edges = create_node_ins_outs(edges=edges, start_node=start_node, end_node=end_node)
 
     # Recursively sort the graph, finding the minimal number of cyclic edges
     cyclic_edges_restgraph = _cyclic_toposort_recursive(node_ins, node_outs)
