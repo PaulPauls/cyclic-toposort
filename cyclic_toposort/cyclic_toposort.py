@@ -97,20 +97,14 @@ def _cyclic_toposort_recursive(
         #### FORWARD SORTING ###########################################################################################
         # Determine nodes with no incoming edges in current state of sorting which therefore can be placed and removed
         # from consideration
-        dependencyless = set()
-        for node, incomings in node_ins.items():
-            if len(incomings) == 0:
-                dependencyless.add(node)
+        dependencyless = {node for node, incomings in node_ins.items() if not incomings}
 
         if not dependencyless:
             #### BACKWARD SORTING ######################################################################################
             while True:
                 # Determine nodes with no outgoing edges in current state of sorting which therefore can be placed and
                 # removed from consideration
-                followerless = set()
-                for node, outgoings in node_outs.items():
-                    if len(outgoings) == 0:
-                        followerless.add(node)
+                followerless = {node for node, outgoings in node_outs.items() if not outgoings}
 
                 if not followerless:
                     #### CYCLE RESOLUTION ##############################################################################
@@ -158,12 +152,11 @@ def _cyclic_toposort_recursive(
 
                 # Remove nodes with no outgoing edges from consideration
                 for node in followerless:
-                    del node_outs[node]
                     del node_ins[node]
+                    del node_outs[node]
 
                 # Remove nodes that were placed/removed from consideration of being following nodes of other nodes
-                for node, outgoings in node_outs.items():
-                    node_outs[node] = outgoings - followerless
+                node_outs = {node: outgoings - followerless for node, outgoings in node_outs.items()}
 
             break
             ############################################################################################################
@@ -178,8 +171,7 @@ def _cyclic_toposort_recursive(
             break
 
         # Remove nodes that were placed/removed from consideration of being necessary nodes of other nodes
-        for node, incomings in node_ins.items():
-            node_ins[node] = incomings - dependencyless
+        node_ins = {node: incomings - dependencyless for node, incomings in node_ins.items()}
         ################################################################################################################
 
     return cyclic_edges
