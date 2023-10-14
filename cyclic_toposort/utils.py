@@ -59,14 +59,12 @@ def generate_modified_ins_outs(
 def create_node_ins_outs(
     edges: Iterable[tuple[int, int]],
     start_node: int | None = None,
-    end_node: int | None = None,
 ) -> tuple[dict[int, set[int]], dict[int, set[int]], set[tuple[int, int]]]:
     """Given the edges of a directed graph, compute the incoming and outgoing connections for each node and identify
-    cyclic edges stemming from required start_node or end_node constraints.
+    cyclic edges stemming from an optional start_node constraint.
 
     :param edges: Iterable of 2-tuples, with the 2-tuples specifying the start and end node of an edge.
     :param start_node: Optionally specified node with which the sorted list of nodes should start.
-    :param end_node: Optionally specified node with which the sorted list of nodes should end.
     :return: 3-tuple of
         - Dictionary mapping nodes to a set of nodes from which there's an incoming edge.
         - Dictionary mapping nodes to a set of nodes to which there's an outgoing edge.
@@ -85,8 +83,8 @@ def create_node_ins_outs(
         node_ins.setdefault(edge_start, set())
         node_outs.setdefault(edge_end, set())
 
-        # If start_node or end_node are supplied then violating edges are automatically considered cyclic
-        if (start_node and start_node == edge_end) or (end_node and end_node == edge_start):
+        # If start_node is supplied then violating edges are automatically considered cyclic
+        if start_node and start_node == edge_end:
             cyclic_edges.add((edge_start, edge_end))
             continue
 
