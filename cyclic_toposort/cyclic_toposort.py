@@ -65,21 +65,14 @@ def cyclic_toposort(
         for cyclic_edges_set in cyclic_edges:
             cyclic_edges_set.update(cyclic_edges_forced)
 
-    # If graph has cyclic edges and is not acyclic to begin with
-    if cyclic_edges[0]:
-        min_graph_topology = None
-        min_graph_topology_len = sys.maxsize
-        # Among the list of sets of minimal cyclic_edges determine the set of cyclic edges that also leads to a
-        # topological sorting with the least amount of topological groupings
-        for cyclic_edges_set in cyclic_edges:
-            reduced_edges = edges - cyclic_edges_set
-            graph_topology = acyclic_toposort(reduced_edges)
-            if len(graph_topology) < min_graph_topology_len:
-                min_graph_topology = (graph_topology, cyclic_edges_set)
-                min_graph_topology_len = len(graph_topology)
-    else:
-        # As the graph is acyclic return a simple acylic topological sorting with an empty set of cyclic edges
-        min_graph_topology = (acyclic_toposort(edges), set())
+    # Among the list of sets of minimal cyclic_edges determine the set of cyclic edges that also leads to a topological
+    # sorting of the acyclic edges that has the least amount of topological groupings
+    min_graph_topology = None
+    for cyclic_edges_set in cyclic_edges:
+        acyclic_edges = edges - cyclic_edges_set
+        graph_topology = acyclic_toposort(acyclic_edges)
+        if not min_graph_topology or len(graph_topology) < len(min_graph_topology[0]):
+            min_graph_topology = (graph_topology, cyclic_edges_set)
 
     return min_graph_topology
 
