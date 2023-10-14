@@ -30,7 +30,18 @@ def cyclic_toposort(
     edges: set[tuple[int, int]],
     start_node: int | None = None,
 ) -> tuple[list[set[int]], set[tuple[int, int]]]:
-    """"""
+    """Perform a topological sorting on a potentially cyclic graph, returning a tuple consisting of a graph topology
+    with the fewest topological groupings and a minimal set of cyclic edges.
+
+    :param edges: A set of tuples where each tuple represents a directed edge (start_node, end_node) in the graph.
+    :param start_node: An optional node. If provided, any edge leading into this node will be considered as a forced
+        cyclic edge.
+    :return: A tuple containing:
+        - A list of sets representing the topological ordering of nodes. Each set contains nodes at the same depth. The
+            amount of topological groupings is minimal out of all possible sets of cyclic edges.
+        - A set of tuples representing the cyclic edges that were identified in the graph and that yielded a graph
+            topology with the fewest topological groupings.
+    """
     node_ins: dict[int, set[int]] = {}
     node_outs: dict[int, set[int]] = {}
     cyclic_edges_forced: set[tuple[int, int]] = set()
@@ -77,7 +88,13 @@ def _cyclic_toposort_recursive(
     node_ins: dict[int, set[int]],
     node_outs: dict[int, set[int]],
 ) -> list[set[tuple[int, int]]]:
-    """"""
+    """Recursive helper function to perform a topological sorting on a potentially cyclic graph by finding minimal
+    cyclic edges in the graph represented by the node inputs and outputs.
+
+    :param node_ins: A dictionary mapping each node to a set of nodes that have edges directed towards it.
+    :param node_outs: A dictionary mapping each node to a set of nodes it directs edges towards.
+    :returns: A list of sets of tuples, where each tuple represents a cyclic edge in the graph.
+    """
     cyclic_edges: list[set[tuple[int, int]]] = [set()]
 
     while True:
