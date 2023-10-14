@@ -25,52 +25,35 @@ import sys
 from cyclic_toposort.acyclic_toposort import acyclic_toposort
 
 
-def cyclic_toposort(edges, start_node=None, end_node=None) -> ([{int}], {(int, int)}):
-    """Sorts directed cyclic graphs given the edges that define the graph and potential start_node or end_node
-    constraints. The function returns a 2-tuple consisting of an ordered list of set of nodes as well as a set of
-    2-tuples being the necessary minimal cyclic edges. Each set of nodes represents a topological level.
+def cyclic_toposort(
+    edges: set[tuple[int, int]],
+    start_node: int | None = None,
+) -> tuple[list[set[int]], set[tuple[int, int]]]:
+    """"""
+    node_ins: dict[int, set[int]] = {}
+    node_outs: dict[int, set[int]] = {}
+    cyclic_edges: set[tuple[int, int]] = set()
 
-    :param edges: Set of 2-tuples, with the 2-tuples specifying the start and end node of an edge
-    :param start_node: int (optional), a node with which the sorted list of nodes should start
-    :param end_node: int (optional), a node with which the sorted list of nodes should end
-    :return: 2-tuple of ordered list of set of nodes and the minimal set of cyclic edges
-    """
-    # Process edges by determining the incoming and outgoing connections for each node
-    node_ins = {}
-    node_outs = {}
-    start_end_cyclic_edges = set()
     for edge_start, edge_end in edges:
         # Don't consider cyclic node edges as not relevant for topological sorting
         if edge_start == edge_end:
             continue
 
-        # Make sure nodes are considered in the incoming/outgoing nodes dicts even if they have no incoming/outgoing
-        # edge
-        if edge_start not in node_ins:
-            node_ins[edge_start] = set()
-        if edge_end not in node_outs:
-            node_outs[edge_end] = set()
+        # Ensure the nodes exist in the dictionaries
+        node_ins.setdefault(edge_start, set())
+        node_outs.setdefault(edge_end, set())
 
-        # If start or endnodes are supplied then violating edges are automatically considered cyclic
-        if start_node and edge_end == start_node:
-            start_end_cyclic_edges.add((edge_start, start_node))
-            continue
-        if end_node and edge_start == end_node:
-            start_end_cyclic_edges.add((end_node, edge_end))
+        # If start_node is supplied then violating edges are automatically considered cyclic
+        if start_node and start_node == edge_end:
+            cyclic_edges.add((edge_start, edge_end))
             continue
 
-        if edge_end not in node_ins:
-            node_ins[edge_end] = {edge_start}
-        else:
-            node_ins[edge_end].add(edge_start)
-
-        if edge_start not in node_outs:
-            node_outs[edge_start] = {edge_end}
-        else:
-            node_outs[edge_start].add(edge_end)
+        # Store the edge_start and edge_end in the node_ins and node_outs dictionaries
+        node_ins.setdefault(edge_end, set()).add(edge_start)
+        node_outs.setdefault(edge_start, set()).add(edge_end)
 
     # Recursively sort the graph, finding all minmal sets cyclic edges that would make the graph acyclic
-    cyclic_edges_restgraph = _cyclic_toposort_groupings_recursive(node_ins, node_outs)
+    cyclic_edges_restgraph = _cyclic_toposort_recursive(node_ins, node_outs)
 
     # Add all necessary cyclic edges stemming from the set start/end node to the determined minimal sets of cyclic edges
     cyclic_edges = []
@@ -103,7 +86,7 @@ def cyclic_toposort(edges, start_node=None, end_node=None) -> ([{int}], {(int, i
     return min_groupings_graph_topology
 
 
-def _cyclic_toposort_groupings_recursive(node_ins, node_outs) -> [{(int, int)}]:
+def _cyclic_toposort_recursive(node_ins, node_outs) -> [{(int, int)}]:
     """Recursive part of the cyclic toposort algorithm, taking a graph as input that is represented through all its
     nodes and its according inputs and outputs.
 
@@ -158,7 +141,7 @@ def _cyclic_toposort_groupings_recursive(node_ins, node_outs) -> [{(int, int)}]:
                             break
 
                         # Recursively check for the minimum amount of cyclic edges in the resulting restgraph
-                        cyclic_edges_restgraph = _cyclic_toposort_groupings_recursive(
+                        cyclic_edges_restgraph = _cyclic_toposort_recursive(
                             reduced_node_ins,
                             reduced_node_outs,
                         )
