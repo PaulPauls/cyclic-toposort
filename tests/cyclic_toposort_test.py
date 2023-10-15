@@ -6,7 +6,7 @@ import yaml
 from graphviz import Digraph
 
 from cyclic_toposort.cyclic_toposort import cyclic_toposort
-from tests.test_utils import bruteforce_toposort, create_random_graph
+from tests.utils import bruteforce_toposort, create_random_graph
 
 TEST_GRAPHS_DIR = "./test_graphs/"
 TEST_RESULTS_YAML = "./test_results.yaml"
