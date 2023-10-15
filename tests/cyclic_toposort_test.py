@@ -52,7 +52,3 @@ def test_random_graphs_against_bruteforce() -> None:
 
     with test_results_yaml.open("w") as test_results_yaml_file:
         yaml.dump(test_results, test_results_yaml_file)
-
-
-if __name__ == "__main__":
-    test_random_graphs_against_bruteforce()
