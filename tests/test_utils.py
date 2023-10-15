@@ -38,7 +38,7 @@ def create_random_graph(
     return edges
 
 
-def bruteforce_cyclic_toposort(
+def bruteforce_toposort(
     edges: set[tuple[int, int]],
     start_node: int | None = None,
 ) -> list[tuple[list[set[int]], set[tuple[int, int]]]]:
