@@ -5,7 +5,6 @@
 * Update the pypi version badge
 * Check if the Installation and Example usage instructions are correct (particularly importing a hyphen package and how to use this hyphen-package or rather as a underscore package)
 * Repeat the 1000 times execution with a timeit package and specify the python version (as well as the processor)
-* Add badges for all the pyproject.toml tools used (see https://github.com/PyCQA/docformatter for many useful sample badges)
 * Add function signatures of exposed functions as documentation to README
 
 
