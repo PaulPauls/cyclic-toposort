@@ -9,7 +9,7 @@ def create_random_graph(
 ) -> set[tuple[int, int]]:
     """Generate a random graph with the given number of edges.
 
-    :param num_edges: The desired number of edges in the graph.
+    :param num_edges: The desired number of edges in the graph. Minimum of 1.
     :param cyclic_nodes: If True, allows edges to loop back to their starting node; if False, edges are strictly between
         distinct nodes.
     :return: A set of edges represented as tuples where each tuple contains two integers corresponding to node IDs.
