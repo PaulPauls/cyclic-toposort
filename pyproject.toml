@@ -41,6 +41,7 @@ ignore = [
 
 [tool.ruff.per-file-ignores]
 "__init__.py" = ["F401"]  # Ignore rule to check for unused imports in __init__.py files.
+"tests/*" = ["S101"]  # Allow asserts in tests as it is the pytest default practice to check conditions with assert.
 
 [tool.mypy]
 strict = true
