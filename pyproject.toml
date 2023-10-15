@@ -37,6 +37,8 @@ ignore = [
     "PLR0912",  # Ignore rule to check for too many branches in functions.
     "PLR0915",  # Ignore rule to check for too many statements in functions.
     "D205",  # Ignore rule to force single line docstring summaries.
+    "S311",  # Ignore rule to prohibit standard pseudo-random generators.
+    "FBT",  # Ignore the flake8-boolean-trap rules as way too strict.
 ]
 
 [tool.ruff.per-file-ignores]
