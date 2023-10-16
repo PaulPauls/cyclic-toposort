@@ -14,6 +14,8 @@ Sorting algorithm for cyclic as well as acyclic directed graphs such as those be
 
 This project provides 2 sorting algorithms for these graphs. A graph is represented as a set of edges with an edge being a 2-tuple describing the start-node and the end-node of an edge. 
 
+`acyclic_toposort` sorts an acyclic graph (or raises a RuntimeError if called on a cyclic graph) into a list of topological groupings. These topological groupings are sets of nodes that are on the same topological level. Nodes in a topological grouping are either dependent on an incoming edge from the prior topological grouping or have no incoming edges if they are in the first topological grouping. 
+
 ```python3
 def acyclic_toposort(edges: Iterable[tuple[int, int]]) -> list[set[int]]:
     """Create and return a topological sorting of an acyclic graph as a list of sets, each set representing a
@@ -27,7 +29,7 @@ def acyclic_toposort(edges: Iterable[tuple[int, int]]) -> list[set[int]]:
     """
 ```
 
-`acyclic_toposort` sorts an acyclic graph (or raises a RuntimeError if called on a cyclic graph) into a list of topological groupings. These topological groupings are sets of nodes that are on the same topological level. Nodes in a topological grouping are either dependent on an incoming edge from the prior topological grouping or have no incoming edges if they are in the first topological grouping. 
+`cyclic_topoosort` on the other hand sorts cyclic graphs and returns a 2-tuple with the first element being the same list of topological groupings that is returned in the `acyclic_toposort` function and the second element being a set of edges that is required to be cyclic in order to make the rest of the graph acyclic. The determined set of cyclic edges is minimal and if the graph is acyclic will be an empty set. If there are multiple sets of cyclic edges that would turn the rest of the graph acyclic and all have the same size then the set of cyclic edges is chosen which enables the acyclic restgraph to be sorted with the least amount of topological groupings. Unfortunately does this algorithm employ full polynomial recursion and can have a runtime of up to O(2^n).
 
 ```python3
 def cyclic_toposort(
@@ -47,8 +49,6 @@ def cyclic_toposort(
             topology with the fewest topological groupings.
     """
 ```
-
-`cyclic_topoosort` on the other hand sorts cyclic graphs and returns a 2-tuple with the first element being the same list of topological groupings that is returned in the `acyclic_toposort` function and the second element being a set of edges that is required to be cyclic in order to make the rest of the graph acyclic. The determined set of cyclic edges is minimal and if the graph is acyclic will be an empty set. If there are multiple sets of cyclic edges that would turn the rest of the graph acyclic and all have the same size then the set of cyclic edges is chosen which enables the acyclic restgraph to be sorted with the least amount of topological groupings. Unfortunately does this algorithm employ full polynomial recursion and can have a runtime of up to O(2^n).
 
 
 ------------------------------------------------------------------------------------------------------------------------
