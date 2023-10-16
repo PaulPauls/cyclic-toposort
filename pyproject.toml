@@ -1,0 +1,51 @@
+[tool.poetry]
+name = "cyclic-toposort"
+version = "1.1.0"
+description = "A sorting algorithm for directed cyclic graphs that results in a sorting with minimal cyclic edges."
+authors = ["Paul Pauls <mail@paulpauls.de>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "cyclic_toposort"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^3.5.0"
+pytest = "^7.4.2"
+pytest-cov = "^4.1.0"
+pyyaml = "^6.0.1"
+graphviz = "^0.20.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+target-version = ["py310", "py311", "py312"]
+line-length = 120
+
+[tool.docformatter]
+wrap-summaries = 120
+wrap-descriptions = 120
+
+[tool.ruff]
+select = ["ALL"]
+target-version = "py310"
+line-length = 120
+ignore = [
+    "C901",  # Ignore rule to check for too complex functions, leaving it to the developer to decide.
+    "PLR0912",  # Ignore rule to check for too many branches in functions.
+    "PLR0915",  # Ignore rule to check for too many statements in functions.
+    "D205",  # Ignore rule to force single line docstring summaries.
+    "S311",  # Ignore rule to prohibit standard pseudo-random generators.
+    "FBT",  # Ignore the flake8-boolean-trap rules as way too strict.
+]
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F401"]  # Ignore rule to check for unused imports in __init__.py files.
+"tests/*" = ["S101"]  # Allow asserts in tests as it is the pytest default practice to check conditions with assert.
+
+[tool.mypy]
+strict = true
+python_version = "3.10"
